@@ -7,4 +7,4 @@ import services.connections
 
 print(locals())
 
-services.connections.cursor_command("SELECT version();")
+# services.connections.cursor_command("SELECT version();")

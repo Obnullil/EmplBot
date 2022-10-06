@@ -5,7 +5,7 @@ from services.settings import config_obnullildb
 
 
 def dec_connection_to_obnullildb(func):
-    def wrap_decorator_connection(command: str):
+    def wrap_decorator_connection(action: int, sql_command: str, sql_param: tuple):
         try:
             # connect to exist database
             connection = psycopg2.connect(
@@ -15,14 +15,29 @@ def dec_connection_to_obnullildb(func):
                 dbname=config_obnullildb['db_name']
             )
 
-            func(command)
-
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    # "SELECT version();"
-                    command
-                )
-                print(f'Server version: {cursor.fetchone()}')
+            func(action, sql_command, sql_param)
+            if action == 'add':
+                with connection.cursor() as cursor:
+                    print(f'command: {sql_command}')
+                    cursor.execute(sql_command, sql_param)
+                    connection.commit()
+                    print(f'[INFO] New entry added to Database')
+            elif action == 'del':
+                with connection.cursor() as cursor:
+                    print(f'command: {sql_command}')
+                    cursor.execute(sql_command, sql_param)
+                    connection.commit()
+                    print(f'[INFO] Entry deleted from Database')
+            elif action == 'get':
+                with connection.cursor() as cursor:
+                    print(f'command: {sql_command}')
+                    cursor.execute(sql_command, sql_param)
+                    print(f'[INFO] The entry was read from Database')
+                    get_info = cursor.fetchall()
+                    print(get_info)
+                    return get_info
+            else:
+                print('[INFO] Action not recognised')
 
         except Exception as _ex:
             print('[INFO] Error while working with PostgreSQL', _ex)
@@ -35,10 +50,9 @@ def dec_connection_to_obnullildb(func):
 
 
 @dec_connection_to_obnullildb
-def cursor_command(command: str):
-    print(command)
-    if command[-1] != ';':
-        command + ';'
+def cursor_command(action, sql_command: str, sql_param: tuple):
+    if sql_command[-1] != ';':
+        sql_command + ';'
 
 # For Test
 # if __name__ == '__main__':
