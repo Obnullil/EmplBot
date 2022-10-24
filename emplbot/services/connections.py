@@ -22,18 +22,22 @@ def dec_connection_to_obnullildb(func):
                 if action == 'add':
                     connection.commit()
                     print(f'[INFO] New entry added to Database')
+                    return True
                 elif action == 'del':
                     connection.commit()
                     print(f'[INFO] Entry deleted from Database')
+                    return True
                 elif action == 'get':
                     print(f'[INFO] The entry was read from Database')
                     get_info = cursor.fetchall()
                     return get_info
                 else:
                     print('[INFO] Action not recognised')
+                    return False
 
         except Exception as _ex:
             print('[INFO] Error while working with PostgreSQL', _ex)
+            return False
         finally:
             if connection:
                 connection.close()

@@ -8,7 +8,7 @@ import datetime
 
 # Model: Employee
 class Employee:
-    def __init__(self, f_name, l_name, company='', specialty='', email='', phone=''):
+    def __init__(self, f_name, l_name, telegram_id, company='', specialty='', email='', phone=''):
         self.__employee_id = 0
         self.f_name = f_name
         self.l_name = l_name
@@ -16,6 +16,7 @@ class Employee:
         self.specialty = specialty
         self.email = email
         self.phone = phone
+        self.telegram_id = telegram_id
         self.__empl_info = []
         self.__sql_command = ''
         self.__sql_param = ()
@@ -34,16 +35,27 @@ class Employee:
         self.__employee_id = 0
 
     def add_employee(self):
-        self.__sql_command = """INSERT INTO employee (
-                                f_name,
-                                l_name,
-                                company,
-                                specialty,
-                                email,
-                                phone) VALUES (%s, %s, %s, %s, %s, %s)"""
-        self.__sql_param = (self.f_name, self.l_name, self.company, self.specialty, self.email, self.phone)
+        try:
+            self.__sql_command = """INSERT INTO employee (
+                                            f_name,
+                                            l_name,
+                                            company,
+                                            specialty,
+                                            email,
+                                            phone,
+                                            telegram_id) VALUES (%s, %s, %s, %s, %s, %s, %s)"""
+            self.__sql_param = (self.f_name, self.l_name, self.company, self.specialty, self.email, self.phone,
+                                self.telegram_id)
 
-        cursor_command('add', self.__sql_command, self.__sql_param)
+            res = cursor_command('add', self.__sql_command, self.__sql_param)
+            if res is False:
+                print(f'[INFO:] Employee {self.f_name} {self.l_name} with telegram_id: {self.telegram_id} do not added')
+                return False
+            else:
+                print(f'[INFO:] Employee {self.f_name} {self.l_name} with telegram_id: {self.telegram_id} was added')
+                return True
+        except Exception as _ex:
+            print(f'[ERROR]: {_ex}')
 
     def delete_employee(self):
         if self.__employee_id != 0:
@@ -55,14 +67,18 @@ class Employee:
             print('[INFO] We have no user with employee_id = 0')
 
     def get_info_of_employee(self):
-        self.__sql_command = """SELECT * FROM employee WHERE f_name = %s AND l_name = %s"""
-        self.__sql_param = (self.f_name, self.l_name)
+        try:
+            print('111111')
+            self.__sql_command = """SELECT * FROM employee WHERE f_name = %s AND l_name = %s AND telegram_id = %s"""
+            self.__sql_param = (self.f_name, self.l_name, self.telegram_id)
 
-        self.__empl_info = cursor_command('get', self.__sql_command, self.__sql_param)
+            self.__empl_info = cursor_command('get', self.__sql_command, self.__sql_param)
 
-        self.__employee_id = self.__empl_info[0][0]
-        print(self.__employee_id)
-        return self.__empl_info
+            self.__employee_id = self.__empl_info[0][0]
+            return self.__empl_info
+        except Exception as _ex:
+            print(f'[ERROR]: sourse: models/get_info_of_employee;\n {_ex} ')
+            return None
 
 
 # Model: Work table
