@@ -87,14 +87,14 @@ class W_table:
                  notes: str, start_shift: datetime.time, end_shift: datetime.time, shift_time: datetime.time):
         self.__w_table_id = 0
         self.fk_employee_id = fk_employee_id
-        self.w_day = w_day
-        self.w_city = w_city
-        self.name_project = name_project
-        self.discr_work = discr_work
-        self.notes = notes
-        self.start_shift = start_shift
-        self.end_shift = end_shift
-        self.shift_time = shift_time
+        self.w_day = w_day                              # Data of the working day
+        self.w_city = w_city                            # city where the job was
+        self.name_project = name_project                # Name of the project
+        self.descr_work = discr_work                    # Description of the project
+        self.notes = notes                              # Notes
+        self.start_shift = start_shift                  # Start time of the shift
+        self.end_shift = end_shift                      # Finish time of the shift
+        self.shift_time = shift_time                    # Working Shift time
         self.sel_w_day_from = datetime.date.today()
         self.sel_w_day_to = datetime.date.today()
         self.del_w_day_from = datetime.date.today()
@@ -116,8 +116,8 @@ class W_table:
                                 shift_time) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         self.__sql_param = (
-        self.fk_employee_id, self.w_day, self.w_city, self.name_project, self.discr_work, self.notes,
-        self.start_shift[0], self.end_shift[0], self.shift_time[0])
+            self.fk_employee_id, self.w_day, self.w_city, self.name_project, self.descr_work, self.notes,
+            self.start_shift[0], self.end_shift[0], self.shift_time[0])
 
         cursor_command('add', self.__sql_command, self.__sql_param)
 
