@@ -1,10 +1,10 @@
-import asyncio
-import logging
+import os
+from dotenv import load_dotenv, find_dotenv
 
-from bot.config_bot import config
-print('1')
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
-bot = Bot(token="...")
+load_dotenv(find_dotenv())
+
+bot = Bot(os.getenv('BOT_TOKEN'))
 dp = Dispatcher(bot, storage=MemoryStorage())
